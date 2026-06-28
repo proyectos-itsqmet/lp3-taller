@@ -13,50 +13,49 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.lp3_taller.dto.UsuarioRequest;
-import com.lp3_taller.dto.UsuarioResponse;
-import com.lp3_taller.service.UsuarioService;
+import com.lp3_taller.dto.ServicioRequest;
+import com.lp3_taller.dto.ServicioResponse;
+import com.lp3_taller.service.ServicioService;
 
 import jakarta.validation.Valid;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("/api/usuarios")
-public class UsuarioController {
+@RequestMapping("/api/servicios")
+public class ServicioController {
 
-    private final UsuarioService service;
+    private final ServicioService service;
 
-    public UsuarioController(UsuarioService service) {
+    public ServicioController(ServicioService service) {
         this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<List<UsuarioResponse>> listar() {
+    public ResponseEntity<List<ServicioResponse>> listar() {
         return ResponseEntity.ok(service.listar());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioResponse> obtener(@PathVariable Long id) {
+    public ResponseEntity<ServicioResponse> obtener(@PathVariable Long id) {
         return ResponseEntity.ok(service.obtener(id));
     }
 
     @PostMapping
-    public ResponseEntity<UsuarioResponse> crear(
-            @Valid @RequestBody UsuarioRequest request,
-            UriComponentsBuilder uriBuilder) {
-        UsuarioResponse creado = service.crear(request);
-        URI location = uriBuilder.path("/api/usuarios/{id}")
-                .buildAndExpand(creado.id())
+    public ResponseEntity<ServicioResponse> crear(@Valid @RequestBody ServicioRequest request) {
+        ServicioResponse created = service.crear(request);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(created.id())
                 .toUri();
-        return ResponseEntity.created(location).body(creado);
+        return ResponseEntity.created(location).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UsuarioResponse> actualizar(
+    public ResponseEntity<ServicioResponse> actualizar(
             @PathVariable Long id,
-            @Valid @RequestBody UsuarioRequest request) {
+            @Valid @RequestBody ServicioRequest request) {
         return ResponseEntity.ok(service.actualizar(id, request));
     }
 
