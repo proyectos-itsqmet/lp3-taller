@@ -1,63 +1,42 @@
 package com.lp3_taller.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "pago")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Pago {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long reservaId;
-    private double monto;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reserva_id", nullable = false)
+    private Reserva reserva;
+
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal monto;
+
+    @Column(nullable = false)
     private LocalDate fecha;
+
+    @Column(nullable = false, length = 50)
     private String metodo;
-
-    public Pago() {
-    }
-
-    public Pago(Long id, Long reservaId, double monto, LocalDate fecha, String metodo) {
-        this.id = id;
-        this.reservaId = reservaId;
-        this.monto = monto;
-        this.fecha = fecha;
-        this.metodo = metodo;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getReservaId() {
-        return reservaId;
-    }
-
-    public void setReservaId(Long reservaId) {
-        this.reservaId = reservaId;
-    }
-
-    public double getMonto() {
-        return monto;
-    }
-
-    public void setMonto(double monto) {
-        this.monto = monto;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
-    public String getMetodo() {
-        return metodo;
-    }
-
-    public void setMetodo(String metodo) {
-        this.metodo = metodo;
-    }
 }

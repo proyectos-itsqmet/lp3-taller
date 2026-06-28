@@ -1,33 +1,120 @@
 package com.lp3_taller.service;
 
-import com.lp3_taller.model.Reserva;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.lp3_taller.dto.ReservaRequest;
+import com.lp3_taller.dto.ReservaResponse;
+import com.lp3_taller.exception.ResourceInUseException;
+import com.lp3_taller.exception.ResourceNotFoundException;
+import com.lp3_taller.mapper.EntityMapper;
+import com.lp3_taller.model.Habitacion;
+import com.lp3_taller.model.Reserva;
+import com.lp3_taller.model.Usuario;
+import com.lp3_taller.repository.HabitacionRepository;
+import com.lp3_taller.repository.PagoRepository;
+import com.lp3_taller.repository.ReservaRepository;
+import com.lp3_taller.repository.UsuarioRepository;
 
 @Service
 public class ReservaService {
 
-    private final List<Reserva> reservas = List.of(
-            new Reserva(1L, 1L, 1L, LocalDate.of(2026, 7, 1), LocalDate.of(2026, 7, 3), "CONFIRMADA", 90.00),
-            new Reserva(2L, 2L, 3L, LocalDate.of(2026, 7, 5), LocalDate.of(2026, 7, 8), "PENDIENTE", 360.00)
-    );
+    private final ReservaRepository reservaRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final HabitacionRepository habitacionRepository;
+    private final PagoRepository pagoRepository;
+    private final EntityMapper mapper;
 
-    public List<Reserva> listar() {
-        return reservas;
+    public ReservaService(ReservaRepository reservaRepository,
+                          UsuarioRepository usuarioRepository,
+                          HabitacionRepository habitacionRepository,
+                          PagoRepository pagoRepository,
+                          EntityMapper mapper) {
+        this.reservaRepository = reservaRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.habitacionRepository = habitacionRepository;
+        this.pagoRepository = pagoRepository;
+        this.mapper = mapper;
     }
 
-    public Optional<Reserva> buscarPorId(Long id) {
-        return reservas.stream()
-                .filter(reserva -> reserva.getId().equals(id))
-                .findFirst();
-    }
-
-    public List<Reserva> listarPorUsuario(Long usuarioId) {
-        return reservas.stream()
-                .filter(reserva -> reserva.getUsuarioId().equals(usuarioId))
+    @Transactional(readOnly = true)
+    public List<ReservaResponse> listar() {
+        return reservaRepository.findAll().stream()
+                .map(mapper::toResponse)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ReservaResponse obtener(Long id) {
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva", id));
+        return mapper.toResponse(reserva);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservaResponse> listarPorUsuario(Long usuarioId) {
+        return reservaRepository.findByUsuario_Id(usuarioId).stream()
+                .map(mapper::toResponse)
+                .toList();
+    }
+
+    @Transactional
+    public ReservaResponse crear(ReservaRequest request) {
+        validarFechas(request);
+
+        Reserva reserva = mapper.toEntity(request);
+        reserva.setUsuario(resolverUsuario(request.usuarioId()));
+        reserva.setHabitacion(resolverHabitacion(request.habitacionId()));
+
+        Reserva guardada = reservaRepository.save(reserva);
+        return mapper.toResponse(guardada);
+    }
+
+    @Transactional
+    public ReservaResponse actualizar(Long id, ReservaRequest request) {
+        validarFechas(request);
+
+        Reserva reserva = reservaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Reserva", id));
+
+        mapper.applyToEntity(request, reserva);
+        reserva.setUsuario(resolverUsuario(request.usuarioId()));
+        reserva.setHabitacion(resolverHabitacion(request.habitacionId()));
+
+        Reserva actualizada = reservaRepository.save(reserva);
+        return mapper.toResponse(actualizada);
+    }
+
+    @Transactional
+    public void eliminar(Long id) {
+        if (!reservaRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Reserva", id);
+        }
+        long n = pagoRepository.countByReserva_Id(id);
+        if (n > 0) {
+            throw new ResourceInUseException("No se puede eliminar la reserva porque tiene " + n
+                    + (n == 1 ? " pago asociado." : " pagos asociados.")
+                    + " Elimine primero los pagos.");
+        }
+        reservaRepository.deleteById(id);
+    }
+
+    private Usuario resolverUsuario(Long usuarioId) {
+        return usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new ResourceNotFoundException("Usuario", usuarioId));
+    }
+
+    private Habitacion resolverHabitacion(Long habitacionId) {
+        return habitacionRepository.findById(habitacionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Habitacion", habitacionId));
+    }
+
+    private void validarFechas(ReservaRequest request) {
+        if (!request.fechaSalida().isAfter(request.fechaEntrada())) {
+            throw new IllegalArgumentException(
+                    "La fecha de salida debe ser posterior a la fecha de entrada");
+        }
     }
 }
