@@ -1,91 +1,56 @@
 package com.lp3_taller.model;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Table(name = "habitacion")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Habitacion {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long hotelId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id", nullable = false)
+    private Hotel hotel;
+
+    @Column(nullable = false, length = 20)
     private String numero;
+
+    @Column(nullable = false, length = 50)
     private String tipo;
-    private double precioPorNoche;
-    private int capacidad;
-    private boolean disponible;
+
+    @Column(name = "precio_por_noche", nullable = false, precision = 10, scale = 2)
+    private BigDecimal precioPorNoche;
+
+    @Column(nullable = false)
+    private Integer capacidad;
+
+    @Column(nullable = false)
+    private Boolean disponible;
+
+    @Column(columnDefinition = "TEXT")
     private String imagen;
 
-    public Habitacion() {
-    }
-
-    public Habitacion(Long id, Long hotelId, String numero, String tipo, double precioPorNoche, int capacidad, boolean disponible, String imagen) {
-        this.id = id;
-        this.hotelId = hotelId;
-        this.numero = numero;
-        this.tipo = tipo;
-        this.precioPorNoche = precioPorNoche;
-        this.capacidad = capacidad;
-        this.disponible = disponible;
-        this.imagen = imagen;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getHotelId() {
-        return hotelId;
-    }
-
-    public void setHotelId(Long hotelId) {
-        this.hotelId = hotelId;
-    }
-
-    public String getNumero() {
-        return numero;
-    }
-
-    public void setNumero(String numero) {
-        this.numero = numero;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public double getPrecioPorNoche() {
-        return precioPorNoche;
-    }
-
-    public void setPrecioPorNoche(double precioPorNoche) {
-        this.precioPorNoche = precioPorNoche;
-    }
-
-    public int getCapacidad() {
-        return capacidad;
-    }
-
-    public void setCapacidad(int capacidad) {
-        this.capacidad = capacidad;
-    }
-
-    public boolean isDisponible() {
-        return disponible;
-    }
-
-    public void setDisponible(boolean disponible) {
-        this.disponible = disponible;
-    }
-
-    public String getImagen() {
-        return imagen;
-    }
-
-    public void setImagen(String imagen) {
-        this.imagen = imagen;
-    }
+    @OneToMany(mappedBy = "habitacion", fetch = FetchType.LAZY)
+    private List<Reserva> reservas = new ArrayList<>();
 }

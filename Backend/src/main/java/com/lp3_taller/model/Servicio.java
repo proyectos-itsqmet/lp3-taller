@@ -1,7 +1,7 @@
 package com.lp3_taller.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,18 +9,18 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "usuario")
+@Table(name = "servicio")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Usuario {
+public class Servicio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,18 +29,9 @@ public class Usuario {
     @Column(nullable = false, length = 100)
     private String nombre;
 
-    @Column(nullable = false, length = 100)
-    private String apellido;
+    @Column(columnDefinition = "TEXT")
+    private String descripcion;
 
-    @Column(unique = true, nullable = false, length = 150)
-    private String email;
-
-    @Column(length = 30)
-    private String telefono;
-
-    @Column(unique = true, nullable = false, length = 30)
-    private String documento;
-
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY)
-    private List<Reserva> reservas = new ArrayList<>();
+    @ManyToMany(mappedBy = "servicios", fetch = FetchType.LAZY)
+    private Set<Hotel> hoteles = new HashSet<>();
 }
