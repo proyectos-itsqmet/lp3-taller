@@ -63,7 +63,6 @@
 			<artifactId>spring-boot-starter-webmvc-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-<<<<<<< HEAD
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -74,8 +73,6 @@
 			<artifactId>spring-boot-starter-thymeleaf-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-=======
->>>>>>> daa03a4f7f61ddf269d72c4da80323c1d25ef1e9
 	</dependencies>
 
 	<build>
