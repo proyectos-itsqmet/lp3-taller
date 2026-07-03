@@ -1,0 +1,17 @@
+import type { ReactNode } from 'react'
+
+interface FormFieldProps {
+  label: string
+  error?: string
+  children: ReactNode
+}
+
+export default function FormField({ label, error, children }: FormFieldProps) {
+  return (
+    <div className="mb-3">
+      <label className="mb-1 block text-sm font-medium text-slate-700">{label}</label>
+      {children}
+      {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
+    </div>
+  )
+}
