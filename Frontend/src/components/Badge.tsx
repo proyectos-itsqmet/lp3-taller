@@ -5,7 +5,6 @@ interface BadgeProps {
   color?: string
 }
 
-// Colores disponibles para el pill. Por defecto slate.
 const COLORES: Record<string, string> = {
   slate: 'bg-slate-100 text-slate-700',
   indigo: 'bg-indigo-100 text-indigo-700',

@@ -8,7 +8,7 @@ import DataTable from '../components/DataTable'
 import Modal from '../components/Modal'
 import FormField from '../components/FormField'
 
-// Estado inicial del formulario (todos los campos como texto para los inputs)
+
 const FORM_VACIO: ClienteInput = {
   nombre: '',
   ruc: '',
@@ -31,7 +31,6 @@ export default function ClientesPage() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [guardando, setGuardando] = useState<boolean>(false)
 
-  // Cargar la lista al montar
   useEffect(() => {
     cargarClientes()
   }, [])
@@ -74,7 +73,6 @@ export default function ClientesPage() {
     setModalAbierto(false)
   }
 
-  // Actualiza un campo del formulario
   function cambiarCampo(campo: keyof ClienteInput, valor: string) {
     setForm((anterior) => ({ ...anterior, [campo]: valor }))
   }
@@ -93,10 +91,9 @@ export default function ClientesPage() {
     } catch (err) {
       const e = err as ApiError
       if (e.status === 400 && e.fieldErrors) {
-        // Errores de validación por campo
         setFieldErrors(e.fieldErrors)
       } else {
-        // Otros errores (409 duplicado, etc.) los mostramos como alerta
+
         window.alert(e.message ?? 'No se pudo guardar el cliente.')
       }
     } finally {
@@ -113,7 +110,7 @@ export default function ClientesPage() {
     } catch (err) {
       const e = err as ApiError
       if (e.status === 409) {
-        // El cliente tiene proyectos asociados
+
         window.alert(e.message ?? 'No se puede eliminar: el cliente tiene proyectos asociados.')
       } else {
         window.alert(e.message ?? 'No se pudo eliminar el cliente.')
@@ -121,7 +118,7 @@ export default function ClientesPage() {
     }
   }
 
-  // Columnas de la tabla
+
   const columnas = [
     { key: 'nombre', label: 'Nombre' },
     { key: 'ruc', label: 'RUC' },
@@ -133,7 +130,7 @@ export default function ClientesPage() {
     },
   ]
 
-  // Acciones por fila (solo si puede escribir)
+
   function acciones(row: Cliente): ReactNode {
     return (
       <div className="flex gap-2">
@@ -155,7 +152,7 @@ export default function ClientesPage() {
 
   return (
     <div>
-      {/* Encabezado */}
+
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-slate-800">Clientes</h1>
         {escribir && (
@@ -168,14 +165,14 @@ export default function ClientesPage() {
         )}
       </div>
 
-      {/* Banner de error */}
+
       {error && (
         <div className="mb-4 rounded-md border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
 
-      {/* Tabla */}
+
       {cargando ? (
         <p className="text-slate-500">Cargando clientes…</p>
       ) : (
@@ -187,7 +184,7 @@ export default function ClientesPage() {
         />
       )}
 
-      {/* Modal de crear/editar */}
+
       <Modal
         open={modalAbierto}
         title={itemEnEdicion ? 'Editar cliente' : 'Nuevo cliente'}

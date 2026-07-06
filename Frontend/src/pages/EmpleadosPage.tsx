@@ -8,7 +8,7 @@ import DataTable from '../components/DataTable'
 import Modal from '../components/Modal'
 import FormField from '../components/FormField'
 
-// Form vacío para el modo "crear". El perfil va anidado (EmpleadoInput).
+
 function formVacio(): EmpleadoInput {
   return {
     nombre: '',
@@ -26,7 +26,7 @@ function formVacio(): EmpleadoInput {
   }
 }
 
-// Construye el form a partir de un empleado existente (modo editar).
+
 function formDesde(e: Empleado): EmpleadoInput {
   return {
     nombre: e.nombre,
@@ -59,7 +59,7 @@ export default function EmpleadosPage() {
   const [errorForm, setErrorForm] = useState<string>('')
   const [guardando, setGuardando] = useState<boolean>(false)
 
-  // Carga la lista de empleados al montar.
+
   async function cargarLista() {
     setCargando(true)
     setError(null)
@@ -100,12 +100,12 @@ export default function EmpleadosPage() {
     setErrorForm('')
   }
 
-  // Actualiza un campo del empleado (nivel raíz).
+
   function cambiarCampo(campo: keyof EmpleadoInput, valor: string) {
     setForm((prev) => ({ ...prev, [campo]: valor }))
   }
 
-  // Actualiza un campo del perfil anidado.
+
   function cambiarPerfil(campo: keyof EmpleadoInput['perfil'], valor: string) {
     setForm((prev) => ({
       ...prev,
@@ -132,10 +132,10 @@ export default function EmpleadosPage() {
     } catch (err) {
       const e = err as ApiError
       if (e.status === 400 && e.fieldErrors) {
-        // Errores de validación: se muestran bajo cada campo.
+
         setFieldErrors(e.fieldErrors)
       } else {
-        // 409 (email/documento duplicado) u otro: se muestra dentro del modal.
+
         setErrorForm(e.message ?? 'No se pudo guardar el empleado.')
       }
     } finally {
@@ -154,7 +154,7 @@ export default function EmpleadosPage() {
     } catch (err) {
       const e = err as ApiError
       if (e.status === 409) {
-        // Conflicto: el empleado está en uso (asignado a proyectos).
+
         window.alert(e.message ?? 'No se puede eliminar: el empleado está en uso.')
       } else {
         setError(e.message ?? 'No se pudo eliminar el empleado.')
@@ -162,7 +162,7 @@ export default function EmpleadosPage() {
     }
   }
 
-  // Helper para leer el error de un campo (soporta clave anidada "perfil.cargo").
+
   function errorDe(clave: string): string | undefined {
     return fieldErrors[clave]
   }

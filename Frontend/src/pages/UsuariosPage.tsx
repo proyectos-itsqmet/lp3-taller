@@ -9,7 +9,6 @@ import FormField from '../components/FormField'
 import Badge from '../components/Badge'
 import Spinner from '../components/Spinner'
 
-// Form vacío para crear un usuario nuevo
 const FORM_VACIO: UsuarioInput = {
   username: '',
   password: '',
@@ -19,7 +18,7 @@ const FORM_VACIO: UsuarioInput = {
   enabled: true,
 }
 
-// Color del Badge según el rol
+
 function colorRol(rol: Rol): string {
   if (rol === 'ADMIN') return 'indigo'
   if (rol === 'GERENTE') return 'amber'
@@ -40,11 +39,11 @@ export default function UsuariosPage() {
   const [errorForm, setErrorForm] = useState<string>('')
   const [guardando, setGuardando] = useState<boolean>(false)
 
-  // Cargar la lista al montar (solo si es ADMIN)
+
   useEffect(() => {
     if (user?.rol !== 'ADMIN') return
     cargar()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [])
 
   async function cargar() {
@@ -71,7 +70,7 @@ export default function UsuariosPage() {
 
   function abrirEditar(u: Usuario) {
     setItemEnEdicion(u)
-    // En edición no se pide la contraseña; se deja vacía (opcional en el back)
+
     setForm({
       username: u.username,
       password: '',
@@ -107,7 +106,7 @@ export default function UsuariosPage() {
       if (err.status === 400 && err.fieldErrors) {
         setFieldErrors(err.fieldErrors)
       } else if (err.status === 409) {
-        // Conflicto: username o email duplicado
+
         setErrorForm(err.message || 'El usuario o el email ya existe.')
       } else {
         setErrorForm(err.message || 'No se pudo guardar el usuario.')
@@ -124,12 +123,12 @@ export default function UsuariosPage() {
       await cargar()
     } catch (e) {
       const err = e as ApiError
-      // 409 = usuario en uso u otra restricción
+
       setError(err.message || 'No se pudo eliminar el usuario.')
     }
   }
 
-  // Guard de rol: solo ADMIN ve el contenido
+
   if (user?.rol !== 'ADMIN') {
     return (
       <div className="rounded-md bg-amber-50 border border-amber-200 text-amber-800 px-4 py-3">

@@ -9,18 +9,17 @@ import Modal from '../components/Modal'
 import FormField from '../components/FormField'
 import Badge from '../components/Badge'
 
-// Estados posibles de un proyecto (calcan el enum del backend)
+
 const ESTADOS = ['PLANIFICADO', 'EN_PROGRESO', 'FINALIZADO', 'CANCELADO']
 
-// Color del Badge según el estado del proyecto
+
 function colorEstado(estado: string): string {
   if (estado === 'EN_PROGRESO') return 'indigo'
   if (estado === 'FINALIZADO') return 'green'
   if (estado === 'CANCELADO') return 'red'
-  return 'slate' // PLANIFICADO y cualquier otro
+  return 'slate' 
 }
 
-// Formulario en memoria: todo como texto (lo que dan los inputs) salvo los ids de empleados
 interface ProyectoForm {
   nombre: string
   descripcion: string
@@ -60,7 +59,7 @@ function ProyectosPage() {
   const [errorForm, setErrorForm] = useState<string>('')
   const [guardando, setGuardando] = useState<boolean>(false)
 
-  // Cargar proyectos, clientes y empleados al montar
+
   useEffect(() => {
     cargarTodo()
   }, [])
@@ -114,12 +113,12 @@ function ProyectosPage() {
     setModalAbierto(false)
   }
 
-  // Actualiza un campo de texto del formulario
+
   function cambiarCampo(campo: keyof ProyectoForm, valor: string): void {
     setForm((prev) => ({ ...prev, [campo]: valor }))
   }
 
-  // Multi-select de empleados: leemos las opciones seleccionadas como números
+
   function cambiarEmpleados(e: React.ChangeEvent<HTMLSelectElement>): void {
     const seleccion = Array.from(e.target.selectedOptions).map((o) => Number(o.value))
     setForm((prev) => ({ ...prev, empleadoIds: seleccion }))
@@ -131,7 +130,6 @@ function ProyectosPage() {
     setFieldErrors({})
     setErrorForm('')
 
-    // Construimos el ProyectoInput a partir del formulario de texto
     const input: ProyectoInput = {
       nombre: form.nombre,
       descripcion: form.descripcion || undefined,
@@ -156,7 +154,7 @@ function ProyectosPage() {
       if (apiErr.status === 400 && apiErr.fieldErrors) {
         setFieldErrors(apiErr.fieldErrors)
       } else {
-        // 409 u otro error: se muestra dentro del modal.
+
         setErrorForm(apiErr.message || 'No se pudo guardar el proyecto.')
       }
     } finally {
@@ -171,12 +169,12 @@ function ProyectosPage() {
       await cargarTodo()
     } catch (err) {
       const apiErr = err as ApiError
-      // 409 = el proyecto está en uso; mostramos el mensaje del backend
+
       setError(apiErr.message || 'No se pudo eliminar el proyecto.')
     }
   }
 
-  // Definición de columnas de la tabla
+
   const columns = [
     { key: 'nombre', label: 'Nombre' },
     {

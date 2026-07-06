@@ -23,7 +23,7 @@ const ITEMS: ItemNav[] = [
   { clave: 'usuarios', etiqueta: 'Usuarios', soloAdmin: true },
 ]
 
-// Color del badge según el rol del usuario.
+
 const COLOR_ROL: Record<string, string> = {
   ADMIN: 'indigo',
   GERENTE: 'blue',
@@ -56,7 +56,7 @@ export default function Layout() {
 
   return (
     <div className="flex h-full">
-      {/* Sidebar oscuro */}
+
       <aside className="flex w-56 flex-col bg-slate-900 text-slate-200">
         <div className="px-5 py-4 text-xl font-bold text-white">CodeHub</div>
         <nav className="flex-1 px-3">
@@ -80,9 +80,9 @@ export default function Layout() {
         </nav>
       </aside>
 
-      {/* Zona principal */}
+
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Header superior */}
+  
         <header className="flex items-center justify-end gap-3 border-b border-slate-200 bg-white px-6 py-3">
           <span className="text-sm font-medium text-slate-700">{user?.nombre}</span>
           {user && <Badge color={COLOR_ROL[user.rol]}>{user.rol}</Badge>}
@@ -95,7 +95,7 @@ export default function Layout() {
           </button>
         </header>
 
-        {/* Área de contenido */}
+    
         <main className="flex-1 overflow-y-auto bg-slate-50 p-6">{renderVista()}</main>
       </div>
     </div>

@@ -1,4 +1,3 @@
-// Tipos que calcan los DTOs del backend CodeHub (camelCase exacto).
 
 export type Rol = 'ADMIN' | 'GERENTE' | 'EMPLEADO'
 

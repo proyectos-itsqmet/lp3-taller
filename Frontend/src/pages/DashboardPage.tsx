@@ -5,7 +5,7 @@ import { useAuth, puedeEscribir } from '../auth/AuthContext'
 import type { Empleado, Cliente, Proyecto } from '../types'
 import Spinner from '../components/Spinner'
 
-// Conteos que se muestran en las tarjetas del dashboard.
+
 interface Conteos {
   empleados: number
   clientes: number
@@ -25,7 +25,7 @@ export default function DashboardPage() {
       setCargando(true)
       setError('')
       try {
-        // Los 3 GET en paralelo; contamos con .length.
+
         const [empleados, clientes, proyectos] = await Promise.all([
           api.get<Empleado[]>('/empleados'),
           api.get<Cliente[]>('/clientes'),

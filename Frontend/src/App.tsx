@@ -3,7 +3,7 @@ import Spinner from './components/Spinner'
 import Layout from './components/Layout'
 import LoginPage from './pages/LoginPage'
 
-// Decide qué mostrar según el estado de autenticación.
+
 function Root() {
   const { user, loading } = useAuth()
 

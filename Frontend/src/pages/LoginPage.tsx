@@ -3,7 +3,7 @@ import type { FormEvent } from 'react'
 import { useAuth } from '../auth/AuthContext'
 import type { ApiError } from '../api/client'
 
-// Página de inicio de sesión: card centrada con usuario y contraseña.
+
 export default function LoginPage() {
   const { login } = useAuth()
   const [username, setUsername] = useState<string>('')
@@ -78,15 +78,6 @@ export default function LoginPage() {
             {cargando ? 'Ingresando…' : 'Ingresar'}
           </button>
         </form>
-
-        <div className="mt-6 rounded-md bg-slate-50 border border-slate-200 p-3 text-xs text-slate-500">
-          <p className="font-medium text-slate-600 mb-1">Usuarios de prueba</p>
-          <ul className="space-y-0.5">
-            <li>admin / admin123</li>
-            <li>gerente / gerente123</li>
-            <li>empleado / empleado123</li>
-          </ul>
-        </div>
       </div>
     </div>
   )

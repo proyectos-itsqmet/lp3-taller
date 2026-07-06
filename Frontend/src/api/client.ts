@@ -1,5 +1,4 @@
-// Cliente HTTP con fetch nativo. Sesión por cookie -> credentials:'include'.
-// Base relativa: el proxy de Vite reenvía /api a localhost:8080.
+
 
 const BASE = '/api'
 
@@ -19,12 +18,12 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     },
   })
 
-  // Sin contenido.
+
   if (res.status === 204) {
     return undefined as T
   }
 
-  // Parsear según el tipo de contenido.
+
   const contentType = res.headers.get('content-type') ?? ''
   const esJson = contentType.includes('application/json')
   const data = esJson ? await res.json() : await res.text()
@@ -56,7 +55,7 @@ export const api = {
   },
 }
 
-// Descarga un PDF: pide el blob y dispara la descarga en el navegador.
+
 export async function descargarPdf(path: string, filename: string): Promise<void> {
   const res = await fetch(BASE + path, { credentials: 'include' })
 
