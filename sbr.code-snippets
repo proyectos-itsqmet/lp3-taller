@@ -1,0 +1,482 @@
+{
+  "sbr-0cfg-1-app": {
+    "scope": "spring-boot-properties",
+    "prefix": "sbr-0cfg-1-app",
+    "description": "app",
+    "body": [
+      "spring.application.name=taller",
+      "server.port=8080"
+    ]
+  },
+  "sbr-0cfg-2-db": {
+    "scope": "spring-boot-properties",
+    "prefix": "sbr-0cfg-2-db",
+    "description": "db",
+    "body": [
+      "spring.datasource.url=jdbc:mysql://localhost:3306/$1",
+      "spring.datasource.username=root",
+      "spring.datasource.password=root",
+      "spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver"
+    ]
+  },
+  "sbr-0cfg-3-jpa": {
+    "scope": "spring-boot-properties",
+    "prefix": "sbr-0cfg-3-jpa",
+    "description": "jpa",
+    "body": [
+      "spring.jpa.hibernate.ddl-auto=update",
+      "spring.jpa.show-sql=true",
+      "spring.jpa.properties.hibernate.format_sql=true",
+      "",
+      "spring.jpa.open-in-view=false"
+    ]
+  },
+  "sbr-0cfg-4-error": {
+    "scope": "spring-boot-properties",
+    "prefix": "sbr-0cfg-4-error",
+    "description": "error",
+    "body": [
+      "spring.web.error.include-message=always"
+    ]
+  },
+  "sbr-1ent-1-model": {
+    "scope": "java",
+    "prefix": "sbr-1ent-1-model",
+    "description": "model",
+    "body": [
+      "@Entity",
+      "@Table(name = \"${1:clientes}\")",
+      "@Getter",
+      "@Setter",
+      "@NoArgsConstructor",
+      "public class $TM_FILENAME_BASE {",
+      "",
+      "    @Id",
+      "    @GeneratedValue(strategy = GenerationType.IDENTITY)",
+      "    private Long id;",
+      "",
+      "    @Column(nullable = false, length = 100)",
+      "    private String string;",
+      "",
+      "    private Integer integer;",
+      "",
+      "    private Long longValue;",
+      "",
+      "    private Double doubleValue;",
+      "",
+      "    @Column(precision = 10, scale = 2)",
+      "    private BigDecimal bigDecimal;",
+      "",
+      "    private Boolean booleanValue;",
+      "",
+      "    private LocalDate localDate;",
+      "",
+      "    private LocalDateTime localDateTime;",
+      "",
+      "    $0",
+      "}"
+    ]
+  },
+  "sbr-1ent-2-onetomany": {
+    "scope": "java",
+    "prefix": "sbr-1ent-2-onetomany",
+    "description": "onetomany",
+    "body": [
+      "@Entity",
+      "@Table(name = \"${1:clientes}\")",
+      "@Getter",
+      "@Setter",
+      "@NoArgsConstructor",
+      "public class $TM_FILENAME_BASE {",
+      "",
+      "    @Id",
+      "    @GeneratedValue(strategy = GenerationType.IDENTITY)",
+      "    private Long id;",
+      "",
+      "    @OneToMany(mappedBy = \"${TM_FILENAME_BASE/^(.)/${1:/downcase}/}\")",
+      "    private List<${2:Reparacion}> ${3:reparaciones} = new ArrayList<>();",
+      "",
+      "    $0",
+      "}"
+    ]
+  },
+  "sbr-1ent-3-manytoone": {
+    "scope": "java",
+    "prefix": "sbr-1ent-3-manytoone",
+    "description": "manytoone",
+    "body": [
+      "@Entity",
+      "@Table(name = \"${1:reparaciones}\")",
+      "@Getter",
+      "@Setter",
+      "@NoArgsConstructor",
+      "public class $TM_FILENAME_BASE {",
+      "",
+      "    @Id",
+      "    @GeneratedValue(strategy = GenerationType.IDENTITY)",
+      "    private Long id;",
+      "",
+      "    @ManyToOne(optional = false)",
+      "    @JoinColumn(name = \"${2/^([A-Z])|([A-Z])/${1:/downcase}${2:+_}${2:/downcase}/g}_id\", nullable = false)",
+      "    private ${2:Cliente} ${2/^(.)/${1:/downcase}/};",
+      "",
+      "    $0",
+      "}"
+    ]
+  },
+  "sbr-2repo-1-model": {
+    "scope": "java",
+    "prefix": "sbr-2repo-1-model",
+    "description": "model",
+    "body": [
+      "public interface $TM_FILENAME_BASE extends JpaRepository<${TM_FILENAME_BASE/Repository$//}, Long> {",
+      "",
+      "    List<${TM_FILENAME_BASE/Repository$//}> findByStringContainingIgnoreCase(String string);",
+      "",
+      "    $0",
+      "}"
+    ]
+  },
+  "sbr-2repo-2-manytoone": {
+    "scope": "java",
+    "prefix": "sbr-2repo-2-manytoone",
+    "description": "manytoone",
+    "body": [
+      "public interface $TM_FILENAME_BASE extends JpaRepository<${TM_FILENAME_BASE/Repository$//}, Long> {",
+      "",
+      "    List<${TM_FILENAME_BASE/Repository$//}> findBy${1:Cliente}Id(Long ${1/^(.)/${1:/downcase}/}Id);",
+      "",
+      "    boolean existsBy${1}Id(Long ${1/^(.)/${1:/downcase}/}Id);",
+      "",
+      "    $0",
+      "}"
+    ]
+  },
+  "sbr-3dto-1-request": {
+    "scope": "java",
+    "prefix": "sbr-3dto-1-request",
+    "description": "request",
+    "body": [
+      "public record $TM_FILENAME_BASE(",
+      "        @NotBlank @Size(min = 2, max = 100) String string,",
+      "        @NotNull @Positive Integer integer,",
+      "        Long longValue,",
+      "        Double doubleValue,",
+      "        @NotNull @DecimalMin(\"0.0\") BigDecimal bigDecimal,",
+      "        Boolean booleanValue,",
+      "        @PastOrPresent LocalDate localDate,",
+      "        LocalDateTime localDateTime) {",
+      "}"
+    ]
+  },
+  "sbr-3dto-2-response": {
+    "scope": "java",
+    "prefix": "sbr-3dto-2-response",
+    "description": "response",
+    "body": [
+      "public record $TM_FILENAME_BASE(",
+      "        Long id,",
+      "        String string,",
+      "        Integer integer,",
+      "        Long longValue,",
+      "        Double doubleValue,",
+      "        BigDecimal bigDecimal,",
+      "        Boolean booleanValue,",
+      "        LocalDate localDate,",
+      "        LocalDateTime localDateTime) {",
+      "",
+      "    public static $TM_FILENAME_BASE from(${TM_FILENAME_BASE/Response$//} e) {",
+      "        return new $TM_FILENAME_BASE(",
+      "                e.getId(),",
+      "                e.getString(),",
+      "                e.getInteger(),",
+      "                e.getLongValue(),",
+      "                e.getDoubleValue(),",
+      "                e.getBigDecimal(),",
+      "                e.getBooleanValue(),",
+      "                e.getLocalDate(),",
+      "                e.getLocalDateTime());",
+      "    }",
+      "}"
+    ]
+  },
+  "sbr-4exc-1-notfound": {
+    "scope": "java",
+    "prefix": "sbr-4exc-1-notfound",
+    "description": "notfound",
+    "body": [
+      "@ResponseStatus(HttpStatus.NOT_FOUND)",
+      "public class RecursoNoEncontradoException extends RuntimeException {",
+      "",
+      "    public RecursoNoEncontradoException(String mensaje) {",
+      "        super(mensaje);",
+      "    }",
+      "}"
+    ]
+  },
+  "sbr-5svc-1-class": {
+    "scope": "java",
+    "prefix": "sbr-5svc-1-class",
+    "description": "class",
+    "body": [
+      "@Service",
+      "public class $TM_FILENAME_BASE {",
+      "",
+      "    private final ${TM_FILENAME_BASE/Service$//}Repository ${TM_FILENAME_BASE/^(.)(.*)Service$/${1:/downcase}$2/}Repository;",
+      "",
+      "    public $TM_FILENAME_BASE(${TM_FILENAME_BASE/Service$//}Repository ${TM_FILENAME_BASE/^(.)(.*)Service$/${1:/downcase}$2/}Repository) {",
+      "        this.${TM_FILENAME_BASE/^(.)(.*)Service$/${1:/downcase}$2/}Repository = ${TM_FILENAME_BASE/^(.)(.*)Service$/${1:/downcase}$2/}Repository;",
+      "    }",
+      "",
+      "    $0",
+      "}"
+    ]
+  },
+  "sbr-5svc-2-listar": {
+    "scope": "java",
+    "prefix": "sbr-5svc-2-listar",
+    "description": "findall",
+    "body": [
+      "@Transactional(readOnly = true)",
+      "public List<${TM_FILENAME_BASE/Service$//}Response> listarTodos() {",
+      "    return ${TM_FILENAME_BASE/^(.)(.*)Service$/${1:/downcase}$2/}Repository.findAll().stream()",
+      "            .map(${TM_FILENAME_BASE/Service$//}Response::from)",
+      "            .toList();",
+      "}"
+    ]
+  },
+  "sbr-5svc-3-obtener": {
+    "scope": "java",
+    "prefix": "sbr-5svc-3-obtener",
+    "description": "findbyid",
+    "body": [
+      "@Transactional(readOnly = true)",
+      "public ${TM_FILENAME_BASE/Service$//}Response obtenerPorId(Long id) {",
+      "    return ${TM_FILENAME_BASE/Service$//}Response.from(buscarEntidad(id));",
+      "}",
+      "",
+      "private ${TM_FILENAME_BASE/Service$//} buscarEntidad(Long id) {",
+      "    return ${TM_FILENAME_BASE/^(.)(.*)Service$/${1:/downcase}$2/}Repository.findById(id)",
+      "            .orElseThrow(() -> new RecursoNoEncontradoException(\"${TM_FILENAME_BASE/Service$//} no encontrado con id \" + id));",
+      "}"
+    ]
+  },
+  "sbr-5svc-4-crear": {
+    "scope": "java",
+    "prefix": "sbr-5svc-4-crear",
+    "description": "create",
+    "body": [
+      "@Transactional",
+      "public ${TM_FILENAME_BASE/Service$//}Response crear(${TM_FILENAME_BASE/Service$//}Request request) {",
+      "    ${TM_FILENAME_BASE/Service$//} ${TM_FILENAME_BASE/^(.)(.*)Service$/${1:/downcase}$2/} = new ${TM_FILENAME_BASE/Service$//}();",
+      "    copiarDatos(request, ${TM_FILENAME_BASE/^(.)(.*)Service$/${1:/downcase}$2/});",
+      "    return ${TM_FILENAME_BASE/Service$//}Response.from(${TM_FILENAME_BASE/^(.)(.*)Service$/${1:/downcase}$2/}Repository.save(${TM_FILENAME_BASE/^(.)(.*)Service$/${1:/downcase}$2/}));",
+      "}"
+    ]
+  },
+  "sbr-5svc-5-copiar": {
+    "scope": "java",
+    "prefix": "sbr-5svc-5-copiar",
+    "description": "copy",
+    "body": [
+      "private void copiarDatos(${TM_FILENAME_BASE/Service$//}Request request, ${TM_FILENAME_BASE/Service$//} e) {",
+      "    e.setString(request.string());",
+      "    e.setInteger(request.integer());",
+      "    e.setLongValue(request.longValue());",
+      "    e.setDoubleValue(request.doubleValue());",
+      "    e.setBigDecimal(request.bigDecimal());",
+      "    e.setBooleanValue(request.booleanValue());",
+      "    e.setLocalDate(request.localDate());",
+      "    e.setLocalDateTime(request.localDateTime());",
+      "}"
+    ]
+  },
+  "sbr-5svc-6-actualizar": {
+    "scope": "java",
+    "prefix": "sbr-5svc-6-actualizar",
+    "description": "update",
+    "body": [
+      "@Transactional",
+      "public ${TM_FILENAME_BASE/Service$//}Response actualizar(Long id, ${TM_FILENAME_BASE/Service$//}Request request) {",
+      "    ${TM_FILENAME_BASE/Service$//} existente = buscarEntidad(id);",
+      "    copiarDatos(request, existente);",
+      "    return ${TM_FILENAME_BASE/Service$//}Response.from(${TM_FILENAME_BASE/^(.)(.*)Service$/${1:/downcase}$2/}Repository.save(existente));",
+      "}"
+    ]
+  },
+  "sbr-5svc-7-eliminar": {
+    "scope": "java",
+    "prefix": "sbr-5svc-7-eliminar",
+    "description": "delete",
+    "body": [
+      "@Transactional",
+      "public void eliminar(Long id) {",
+      "    ${TM_FILENAME_BASE/^(.)(.*)Service$/${1:/downcase}$2/}Repository.delete(buscarEntidad(id));",
+      "}"
+    ]
+  },
+  "sbr-5svc-8-buscar": {
+    "scope": "java",
+    "prefix": "sbr-5svc-8-buscar",
+    "description": "search",
+    "body": [
+      "@Transactional(readOnly = true)",
+      "public List<${TM_FILENAME_BASE/Service$//}Response> buscarPorString(String string) {",
+      "    return ${TM_FILENAME_BASE/^(.)(.*)Service$/${1:/downcase}$2/}Repository.findByStringContainingIgnoreCase(string).stream()",
+      "            .map(${TM_FILENAME_BASE/Service$//}Response::from)",
+      "            .toList();",
+      "}"
+    ]
+  },
+  "sbr-6ctl-1-class": {
+    "scope": "java",
+    "prefix": "sbr-6ctl-1-class",
+    "description": "class",
+    "body": [
+      "@RestController",
+      "@RequestMapping(\"/api/${1:clientes}\")",
+      "@CrossOrigin(origins = \"*\")",
+      "public class $TM_FILENAME_BASE {",
+      "",
+      "    private final ${TM_FILENAME_BASE/Controller$//}Service ${TM_FILENAME_BASE/^(.)(.*)Controller$/${1:/downcase}$2/}Service;",
+      "",
+      "    public $TM_FILENAME_BASE(${TM_FILENAME_BASE/Controller$//}Service ${TM_FILENAME_BASE/^(.)(.*)Controller$/${1:/downcase}$2/}Service) {",
+      "        this.${TM_FILENAME_BASE/^(.)(.*)Controller$/${1:/downcase}$2/}Service = ${TM_FILENAME_BASE/^(.)(.*)Controller$/${1:/downcase}$2/}Service;",
+      "    }",
+      "",
+      "    $0",
+      "}"
+    ]
+  },
+  "sbr-6ctl-2-listar": {
+    "scope": "java",
+    "prefix": "sbr-6ctl-2-listar",
+    "description": "findall",
+    "body": [
+      "@GetMapping",
+      "public ResponseEntity<List<${TM_FILENAME_BASE/Controller$//}Response>> listar() {",
+      "    return ResponseEntity.ok(${TM_FILENAME_BASE/^(.)(.*)Controller$/${1:/downcase}$2/}Service.listarTodos());",
+      "}"
+    ]
+  },
+  "sbr-6ctl-3-obtener": {
+    "scope": "java",
+    "prefix": "sbr-6ctl-3-obtener",
+    "description": "findbyid",
+    "body": [
+      "@GetMapping(\"/{id}\")",
+      "public ResponseEntity<${TM_FILENAME_BASE/Controller$//}Response> obtener(@PathVariable Long id) {",
+      "    return ResponseEntity.ok(${TM_FILENAME_BASE/^(.)(.*)Controller$/${1:/downcase}$2/}Service.obtenerPorId(id));",
+      "}"
+    ]
+  },
+  "sbr-6ctl-4-crear": {
+    "scope": "java",
+    "prefix": "sbr-6ctl-4-crear",
+    "description": "create",
+    "body": [
+      "@PostMapping",
+      "public ResponseEntity<${TM_FILENAME_BASE/Controller$//}Response> crear(@Valid @RequestBody ${TM_FILENAME_BASE/Controller$//}Request request) {",
+      "    ${TM_FILENAME_BASE/Controller$//}Response creado = ${TM_FILENAME_BASE/^(.)(.*)Controller$/${1:/downcase}$2/}Service.crear(request);",
+      "    URI location = ServletUriComponentsBuilder.fromCurrentRequest()",
+      "            .path(\"/{id}\")",
+      "            .buildAndExpand(creado.id())",
+      "            .toUri();",
+      "    return ResponseEntity.created(location).body(creado);",
+      "}"
+    ]
+  },
+  "sbr-6ctl-5-actualizar": {
+    "scope": "java",
+    "prefix": "sbr-6ctl-5-actualizar",
+    "description": "update",
+    "body": [
+      "@PutMapping(\"/{id}\")",
+      "public ResponseEntity<${TM_FILENAME_BASE/Controller$//}Response> actualizar(@PathVariable Long id,",
+      "        @Valid @RequestBody ${TM_FILENAME_BASE/Controller$//}Request request) {",
+      "    return ResponseEntity.ok(${TM_FILENAME_BASE/^(.)(.*)Controller$/${1:/downcase}$2/}Service.actualizar(id, request));",
+      "}"
+    ]
+  },
+  "sbr-6ctl-6-eliminar": {
+    "scope": "java",
+    "prefix": "sbr-6ctl-6-eliminar",
+    "description": "delete",
+    "body": [
+      "@DeleteMapping(\"/{id}\")",
+      "public ResponseEntity<Void> eliminar(@PathVariable Long id) {",
+      "    ${TM_FILENAME_BASE/^(.)(.*)Controller$/${1:/downcase}$2/}Service.eliminar(id);",
+      "    return ResponseEntity.noContent().build();",
+      "}"
+    ]
+  },
+  "sbr-6ctl-7-buscar": {
+    "scope": "java",
+    "prefix": "sbr-6ctl-7-buscar",
+    "description": "search",
+    "body": [
+      "@GetMapping(\"/buscar\")",
+      "public ResponseEntity<List<${TM_FILENAME_BASE/Controller$//}Response>> buscar(@RequestParam String string) {",
+      "    return ResponseEntity.ok(${TM_FILENAME_BASE/^(.)(.*)Controller$/${1:/downcase}$2/}Service.buscarPorString(string));",
+      "}"
+    ]
+  },
+  "sbr-7sec-1-class": {
+    "scope": "java",
+    "prefix": "sbr-7sec-1-class",
+    "description": "class",
+    "body": [
+      "@Configuration",
+      "public class SecurityConfig {",
+      "",
+      "    $0",
+      "}"
+    ]
+  },
+  "sbr-7sec-2-encoder": {
+    "scope": "java",
+    "prefix": "sbr-7sec-2-encoder",
+    "description": "encoder",
+    "body": [
+      "@Bean",
+      "public PasswordEncoder passwordEncoder() {",
+      "    return new BCryptPasswordEncoder();",
+      "}"
+    ]
+  },
+  "sbr-7sec-3-users": {
+    "scope": "java",
+    "prefix": "sbr-7sec-3-users",
+    "description": "users",
+    "body": [
+      "@Bean",
+      "public UserDetailsService users(PasswordEncoder encoder) {",
+      "    return new InMemoryUserDetailsManager(",
+      "            User.withUsername(\"admin\").password(encoder.encode(\"admin123\")).roles(\"ADMIN\").build(),",
+      "            User.withUsername(\"user\").password(encoder.encode(\"user123\")).roles(\"USER\").build());",
+      "}"
+    ]
+  },
+  "sbr-7sec-4-chain": {
+    "scope": "java",
+    "prefix": "sbr-7sec-4-chain",
+    "description": "chain",
+    "body": [
+      "@Bean",
+      "public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {",
+      "    http",
+      "            .csrf(csrf -> csrf.disable())",
+      "            .cors(Customizer.withDefaults())",
+      "            .authorizeHttpRequests(auth -> auth",
+      "                    .requestMatchers(HttpMethod.OPTIONS, \"/**\").permitAll()",
+      "                    .requestMatchers(HttpMethod.GET, \"/api/**\").hasAnyRole(\"USER\", \"ADMIN\")",
+      "                    .requestMatchers(\"/api/**\").hasRole(\"ADMIN\")",
+      "                    .anyRequest().authenticated())",
+      "            .httpBasic(Customizer.withDefaults())",
+      "            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));",
+      "",
+      "    return http.build();",
+      "}"
+    ]
+  }
+}

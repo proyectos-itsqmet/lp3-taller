@@ -1,0 +1,189 @@
+{
+  "fl-0cfg-1-appenv": {
+    "scope": "dart",
+    "prefix": "fl-0cfg-1-appenv",
+    "description": "appenv",
+    "body": [
+      "abstract final class AppEnv {",
+      "  static String get projectUrl => dotenv.get('PROJECT_URL');",
+      "  static String get publishableKey => dotenv.get('PUBLISHABLE_KEY');",
+      "  static String get ${1:restCountriesKey} => dotenv.get('${2:REST_COUNTRIES_KEY}');",
+      "}"
+    ]
+  },
+  "fl-0cfg-2-init": {
+    "scope": "dart",
+    "prefix": "fl-0cfg-2-init",
+    "description": "init",
+    "body": [
+      "WidgetsFlutterBinding.ensureInitialized();",
+      "await dotenv.load();",
+      "await Supabase.initialize(",
+      "  url: AppEnv.projectUrl,",
+      "  publishableKey: AppEnv.publishableKey,",
+      ");"
+    ]
+  },
+  "fl-1auth-1-class": {
+    "scope": "dart",
+    "prefix": "fl-1auth-1-class",
+    "description": "class",
+    "body": [
+      "class AuthService {",
+      "  final _supabase = Supabase.instance.client;",
+      "",
+      "  User? get usuario => _supabase.auth.currentUser;",
+      "",
+      "  $0",
+      "}"
+    ]
+  },
+  "fl-1auth-2-registrar": {
+    "scope": "dart",
+    "prefix": "fl-1auth-2-registrar",
+    "description": "register",
+    "body": [
+      "Future<void> registrar(String nombre, String email, String password) async {",
+      "  await _supabase.auth.signUp(",
+      "    password: password,",
+      "    email: email,",
+      "    data: {'nombre': nombre},",
+      "  );",
+      "}"
+    ]
+  },
+  "fl-1auth-3-login": {
+    "scope": "dart",
+    "prefix": "fl-1auth-3-login",
+    "description": "login",
+    "body": [
+      "Future<void> login(String email, String password) async {",
+      "  await _supabase.auth.signInWithPassword(password: password, email: email);",
+      "}"
+    ]
+  },
+  "fl-1auth-4-logout": {
+    "scope": "dart",
+    "prefix": "fl-1auth-4-logout",
+    "description": "logout",
+    "body": [
+      "Future<void> logout() async {",
+      "  await _supabase.auth.signOut();",
+      "}"
+    ]
+  },
+  "fl-2api-1-class": {
+    "scope": "dart",
+    "prefix": "fl-2api-1-class",
+    "description": "class",
+    "body": [
+      "class ${TM_FILENAME_BASE/(^|_)([a-z])/${2:/upcase}/g} {",
+      "  final _dio = Dio();",
+      "",
+      "  $0",
+      "}"
+    ]
+  },
+  "fl-2api-2-listar": {
+    "scope": "dart",
+    "prefix": "fl-2api-2-listar",
+    "description": "list",
+    "body": [
+      "Future<List<${1:Pais}>> listar() async {",
+      "  final response = await _dio.get('${2:https://restcountries.com/v3.1/all}');",
+      "  return (response.data as List).map((e) => $1.fromJson(e)).toList();",
+      "}"
+    ]
+  },
+  "fl-3db-1-class": {
+    "scope": "dart",
+    "prefix": "fl-3db-1-class",
+    "description": "class",
+    "body": [
+      "class ${TM_FILENAME_BASE/(^|_)([a-z])/${2:/upcase}/g} {",
+      "  final _db = Supabase.instance.client;",
+      "",
+      "  String get _usuarioId => _db.auth.currentUser!.id;",
+      "",
+      "  $0",
+      "}"
+    ]
+  },
+  "fl-3db-2-listar": {
+    "scope": "dart",
+    "prefix": "fl-3db-2-listar",
+    "description": "list",
+    "body": [
+      "Future<List<${1:Viaje}>> listar() async {",
+      "  final datos = await _db",
+      "      .from('${2:viajes}')",
+      "      .select()",
+      "      .eq('usuario_id', _usuarioId)",
+      "      .order('${3:id}');",
+      "  return datos.map((e) => $1.fromJson(e)).toList();",
+      "}"
+    ]
+  },
+  "fl-3db-3-buscar": {
+    "scope": "dart",
+    "prefix": "fl-3db-3-buscar",
+    "description": "search",
+    "body": [
+      "Future<List<${1:Viaje}>> buscar(String texto) async {",
+      "  final datos = await _db",
+      "      .from('${2:viajes}')",
+      "      .select()",
+      "      .eq('usuario_id', _usuarioId)",
+      "      .ilike('${3:pais}', '%\\$texto%');",
+      "  return datos.map((e) => $1.fromJson(e)).toList();",
+      "}"
+    ]
+  },
+  "fl-3db-4-crear": {
+    "scope": "dart",
+    "prefix": "fl-3db-4-crear",
+    "description": "create",
+    "body": [
+      "Future<void> crear(String ${2:pais}, String ${3:nota}) async {",
+      "  await _db.from('${1:viajes}').insert({",
+      "    '$2': $2,",
+      "    '$3': $3,",
+      "  });",
+      "}"
+    ]
+  },
+  "fl-3db-5-actualizar": {
+    "scope": "dart",
+    "prefix": "fl-3db-5-actualizar",
+    "description": "update",
+    "body": [
+      "Future<void> actualizar(int id, String ${2:pais}, String ${3:nota}) async {",
+      "  await _db",
+      "      .from('${1:viajes}')",
+      "      .update({'$2': $2, '$3': $3})",
+      "      .eq('id', id);",
+      "}"
+    ]
+  },
+  "fl-3db-6-eliminar": {
+    "scope": "dart",
+    "prefix": "fl-3db-6-eliminar",
+    "description": "delete",
+    "body": [
+      "Future<void> eliminar(int id) async {",
+      "  await _db.from('${1:viajes}').delete().eq('id', id);",
+      "}"
+    ]
+  },
+  "fl-4ui-1-perfil": {
+    "scope": "dart",
+    "prefix": "fl-4ui-1-perfil",
+    "description": "profile",
+    "body": [
+      "final auth = AuthService();",
+      "final usuario = auth.usuario;",
+      "final nombre =",
+      "    (usuario?.userMetadata?['nombre'] as String?) ?? 'Sin nombre';"
+    ]
+  }
+}
